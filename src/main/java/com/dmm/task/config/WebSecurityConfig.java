@@ -30,6 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 		super.configure(auth);
 	}
+	
+	 
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -52,5 +54,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.logout().logoutSuccessUrl("/login") // ログアウト成功時に遷移するパス
 				.permitAll(); // 全ユーザに対して許可
 	}
+
 
 }

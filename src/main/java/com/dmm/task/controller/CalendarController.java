@@ -2,15 +2,12 @@ package com.dmm.task.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,13 +16,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TaskRepository;
 import com.dmm.task.form.TaskForm;
 import com.dmm.task.service.AccountUserDetails;
-import com.dmm.task.service.CalendarService;
 
 @Controller
 public class CalendarController {
@@ -33,9 +28,10 @@ public class CalendarController {
     @Autowired
     private TaskRepository taskRepository;
 
+
     @GetMapping("/main")
     @PreAuthorize("hasRole('ROLE_USER')") 
-    public String showCalendar(@RequestParam(name = "date", required = false) String dateString, Model model, @AuthenticationPrincipal AccountUserDetails user) {
+  public String showCalendar(@RequestParam(name = "date", required = false) String dateString, Model model, @AuthenticationPrincipal AccountUserDetails user) {
         LocalDate date;
         if (dateString == null || dateString.isEmpty()) {
             date = LocalDate.now();
@@ -49,9 +45,13 @@ public class CalendarController {
         LocalDate prev = date.minusMonths(1);
         LocalDate next = date.plusMonths(1);
 
+        model.addAttribute("prev", prev);
+        model.addAttribute("next", next);
+
+
   
         // ログインユーザーに関連するタスクの取得
-        List<Tasks> userTasks = taskRepository.findByName(user.getName()); // user.getUser() はユーザーエンティティにアクセスする例です
+        List<Tasks> userTasks = taskRepository.findByName(user.getName()); 
 
         // カレンダーにタスク情報を追加
         Map<LocalDate, List<Tasks>> tasksByDate = userTasks.stream()
@@ -62,12 +62,10 @@ public class CalendarController {
         List<List<LocalDate>> matrix = CalendarService.generateCalendarMatrix(date.getYear(), date.getMonthValue());
         model.addAttribute("matrix", matrix);
         
-        model.addAttribute("prev", prev);
-        model.addAttribute("next", next);
 
         return "main";
     }
-    
+    */
     
 	@Autowired
 	private TaskRepository repo;
@@ -95,7 +93,7 @@ public class CalendarController {
     
 	@PostMapping("/main/create")
 	public String create(@Validated TaskForm taskForm, BindingResult bindingResult,
-	        @AuthenticationPrincipal AccountUserDetails user, @RequestParam(name = "selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate, Model model) {
+	        @AuthenticationPrincipal AccountUserDetails user,  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate, Model model) {
 		// バリデーションの結果、エラーがあるかどうかチェック
 		if (bindingResult.hasErrors()) {
 			// エラーがある場合は投稿登録画面を返す
@@ -106,6 +104,7 @@ public class CalendarController {
 			return "/create";
 		}
 		
+	
 		LocalDateTime dateTime = selectedDate.atStartOfDay();
 
 		Tasks post = new Tasks();
@@ -118,5 +117,6 @@ public class CalendarController {
 		repo.save(post);
 
 		return "redirect:/main";
-	}
+	
+}
 }

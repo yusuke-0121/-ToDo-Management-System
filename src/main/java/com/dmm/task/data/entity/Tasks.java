@@ -20,6 +20,5 @@ public class Tasks {
 	private String text;
 	private LocalDateTime date;
 	private Boolean done;
-	
-	
+
 }
