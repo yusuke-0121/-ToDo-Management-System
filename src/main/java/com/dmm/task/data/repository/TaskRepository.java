@@ -11,17 +11,13 @@ import org.springframework.stereotype.Repository;
 import com.dmm.task.data.entity.Tasks;
 
 
-
 @Repository
 public interface TaskRepository extends JpaRepository<Tasks, Integer> {
-
-
-    @Query("SELECT t FROM Tasks t WHERE t.date BETWEEN :from AND :to AND t.name = :name")
-    List<Tasks> findByDateBetween(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
-            @Param("name") String name
-    );
-    
-}
+	@Query("select a from Tasks a where a.date between :from and :to and name = :name")
+	List<Tasks> findByDateBetween(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
+			@Param("name") String name);
 	
+	@Query("select a from Tasks a where a.date between :from and :to")
+	List<Tasks> findByDateBetweenByAdmin(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+
+}
