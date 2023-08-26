@@ -1,5 +1,6 @@
 package com.dmm.task.service;
 
+
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -66,7 +67,4 @@ public class AccountUserDetails implements UserDetails { // UserDetailsを実装
 	public String getName() {
 		return user.getName();
 	}
-	
-	
-	
 }
