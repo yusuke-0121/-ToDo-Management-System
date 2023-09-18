@@ -2,7 +2,7 @@ package com.dmm.task.controller;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +53,8 @@ public class TaskController {
 			current = date;
 		}
 
-		//月
+		//月 
+		/*
         Month month = current.getMonth();
         model.addAttribute("month", month);
 
@@ -61,7 +62,12 @@ public class TaskController {
         LocalDate next = current.plusMonths(1);
         model.addAttribute("prev", prev);
         model.addAttribute("next", next);
-		
+		*/
+		String Str = current.format(DateTimeFormatter.ofPattern("yyyy年MM月"));
+		model.addAttribute("month", Str);
+		model.addAttribute("prev", current.minusMonths(1));
+		model.addAttribute("next", current.plusMonths(1));
+        
        //週
 		DayOfWeek w = current.getDayOfWeek();
 		LocalDate day = current.minusDays(w.getValue());
